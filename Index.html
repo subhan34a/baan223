@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Portal System | NexusCorp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 220, 255, 0.3) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.4);
+            transition: var(--transition);
+        }
+        
+        .logo-icon:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+        
+        .logo-text h1 {
+            font-size: 28px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-text p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 3px;
+        }
+        
+        .current-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: var(--transition);
+        }
+        
+        .current-user:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 5px 10px rgba(99, 102, 241, 0.3);
+        }
+        
+        .user-info h3 {
+            font-size: 16px;
+            color: var(--dark);
+        }
+        
+        .user-info p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Portal Cards */
+        .portals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .portal-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            animation-fill-mode: both;
+        }
+        
+        .portal-card:nth-child(1) { animation-delay: 0.1s; }
+        .portal-card:nth-child(2) { animation-delay: 0.2s; }
+        .portal-card:nth-child(3) { animation-delay: 0.3s; }
+        
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            transition: var(--transition);
+        }
+        
+        .portal-card.employee::before { background: var(--primary); }
+        .portal-card.manager::before { background: var(--accent); }
+        .portal-card.customer::before { background: var(--secondary); }
+        
+        .portal-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .portal-card:hover::before {
+            height: 100%;
+            opacity: 0.05;
+        }
+        
+        .portal-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 32px;
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .portal-card:hover .portal-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .portal-card.employee .portal-icon { 
+            background: var(--gradient-primary);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .portal-card.manager .portal-icon { 
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+        }
+        
+        .portal-card.customer .portal-icon { 
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .portal-card h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .portal-card p {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .portal-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-item h3 {
+            font-size: 24px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-item p {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 0;
+        }
+        
+        /* Login Form */
+        .login-container {
+            max-width: 450px;
+            margin: 50px auto;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .login-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .login-header p {
+            color: var(--gray);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            z-index: 1;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 2px solid #e2e8f0;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .btn-logout {
+            background: var(--danger);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dashboard-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dashboard-nav {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 5px;
+        }
+        
+        .nav-item {
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .nav-item.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-content {
+            padding: 40px;
+            min-height: 600px;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        /* Message System */
+        .message-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message-card.unread {
+            border-left: 5px solid var(--accent);
+            background: linear-gradient(to right, rgba(245, 158, 11, 0.05), white);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .message-sender {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sender-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .message-info h4 {
+            font-size: 16px;
+            color: var(--dark);
+        }
+        
+        .message-info p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .message-tag {
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .message-body {
+            color: var(--dark);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .message-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-action.mark-read {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+        
+        .btn-action.mark-read:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-action.delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .btn-action.delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Products */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        .product-image {
+            height: 180px;
+            background: var(--gradient-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+            transition: var(--transition);
+        }
+        
+        .product-content {
+            padding: 25px;
+        }
+        
+        .product-category {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .product-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .product-description {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .product-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .product-stock {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .stock-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .stock-indicator.in-stock {
+            background: var(--secondary);
+        }
+        
+        .stock-indicator.low-stock {
+            background: var(--accent);
+        }
+        
+        .stock-indicator.out-of-stock {
+            background: var(--danger);
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .stat-content h3 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-content p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        /* Notifications */
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Loading */
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .portals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-nav {
+                flex-wrap: wrap;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+            border-left: 5px solid var(--secondary);
+            max-width: 350px;
+        }
+        
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+        
+        .toast.warning {
+            border-left-color: var(--accent);
+        }
+        
+        .toast-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .toast.success .toast-icon {
+            background: var(--secondary);
+        }
+        
+        .toast.error .toast-icon {
+            background: var(--danger);
+        }
+        
+        .toast.warning .toast-icon {
+            background: var(--accent);
+        }
+        
+        .toast-content h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .toast-content p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-hover);
+            animation: fadeInUp 0.4s ease;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            font-size: 22px;
+        }
+        
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <!-- Header (Shown when logged in) -->
+        <div class="header" id="appHeader" style="display: none;">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-sitemap"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>NexusCorp Portal</h1>
+                    <p>Enterprise Management System</p>
+                </div>
+            </div>
+            <div class="current-user" id="currentUserInfo">
+                <div class="user-avatar" id="userAvatar">JD</div>
+                <div class="user-info">
+                    <h3 id="userName">John Doe</h3>
+                    <p id="userRole">Employee</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Portal Selection -->
+        <div id="portalSelection">
+            <div class="portals-grid">
+                <div class="portal-card employee" onclick="showLogin('employee')">
+                    <div class="portal-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h2>Employee Portal</h2>
+                    <p>Access your workspace, view tasks, receive messages from management, and manage your daily activities.</p>
+                    <div class="portal-stats">
+                        <div class="stat-item">
+                            <h3 id="employeeCount">48</h3>
+                            <p>Active</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 id="unreadMessages">5</h3>
+                            <p>Messages</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>12</h3>
+                            <p>Tasks</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portal-card manager" onclick="showLogin('manager')">
+                    <div class="portal-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h2>Manager Portal</h2>
+                    <p>Manage team communications, monitor performance metrics, assign tasks, and oversee company operations.</p>
+                    <div class="portal-stats">
+                        <div class="stat-item">
+                            <h3>6</h3>
+                            <p>Departments</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 id="totalEmployees">48</h3>
+                            <p>Employees</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>24</h3>
+                            <p>Projects</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portal-card customer" onclick="showCustomerPortal()">
+                    <div class="portal-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h2>Customer Portal</h2>
+                    <p>Browse our product catalog, view specifications, check availability, and access customer resources.</p>
+                    <div class="portal-stats">
+                        <div class="stat-item">
+                            <h3 id="productCount">156</h3>
+                            <p>Products</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>24</h3>
+                            <p>Categories</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>98%</h3>
+                            <p>Satisfaction</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="portal-card" style="grid-column: 1/-1; text-align: left;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="font-size: 48px; color: var(--primary);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h2>Real-time System Analytics</h2>
+                        <p>Our portal system is currently serving <strong>254 active users</strong> with <strong>99.8% uptime</strong>. Last updated: Just now</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Login Form -->
+        <div id="loginForm" class="login-container" style="display: none;">
+            <div class="login-card">
+                <div class="login-header">
+                    <h2 id="loginTitle">Employee Portal Login</h2>
+                    <p id="loginSubtitle">Enter your credentials to access the portal</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="username">Username / Employee ID</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" class="form-control" placeholder="Enter your username">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password">
+                        <span class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe" style="display: inline; margin-left: 5px;">Remember me</label>
+                    </div>
+                    <a href="#" style="color: var(--primary); text-decoration: none; font-size: 14px;">Forgot password?</a>
+                </div>
+                
+                <div id="loginMessage" style="color: var(--danger); text-align: center; margin-bottom: 20px; font-weight: 500;"></div>
+                
+                <button class="btn btn-primary" onclick="login()" id="loginButton">
+                    <span>Sign In</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <button class="btn btn-secondary" onclick="showPortalSelection()">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Portals</span>
+                </button>
+                
+                <div style="text-align: center; margin-top: 30px; color: var(--gray); font-size: 14px;">
+                    <p>Need help? Contact IT Support at <strong>support@nexuscorp.com</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Employee Dashboard -->
+        <div id="employeeDashboard" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <div>
+                    <h2 style="font-size: 24px; margin-bottom: 5px;">Employee Dashboard</h2>
+                    <p style="opacity: 0.9;">Welcome back, <span id="empName">John</span></p>
+                </div>
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--gradient-primary);">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="empUnreadCount">5</h3>
+                            <p>Unread Messages</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>8</h3>
+                            <p>Pending Tasks</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>22</h3>
+                            <p>Work Days This Month</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>94%</h3>
+                            <p>Performance Score</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-nav">
+                    <div class="nav-item active" onclick="showEmployeeSection('messages')">
+                        <i class="fas fa-envelope"></i>
+                        Messages
+                        <span class="notification-badge" id="messageBadge">5</span>
+                    </div>
+                    <div class="nav-item" onclick="showEmployeeSection('tasks')">
+                        <i class="fas fa-tasks"></i>
+                        Tasks
+                    </div>
+                    <div class="nav-item" onclick="showEmployeeSection('schedule')">
+                        <i class="fas fa-calendar-alt"></i>
+                        Schedule
+                    </div>
+                    <div class="nav-item" onclick="showEmployeeSection('documents')">
+                        <i class="fas fa-file-alt"></i>
+                        Documents
+                    </div>
+                </div>
+                
+                <div id="employeeMessagesSection" class="section active">
+                    <h3 style="margin-bottom: 25px; color: var(--dark);">Messages from Management</h3>
+                    <div id="employeeMessagesContainer"></div>
+                </div>
+                
+                <div id="employeeTasksSection" class="section">
+                    <h3 style="margin-bottom: 25px; color: var(--dark);">Your Tasks</h3>
+                    <div style="background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                        <p style="color: var(--gray); text-align: center; padding: 40px;">Task management module coming soon!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manager Dashboard -->
+        <div id="managerDashboard" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <div>
+                    <h2 style="font-size: 24px; margin-bottom: 5px;">Management Dashboard</h2>
+                    <p style="opacity: 0.9;">Manager Control Panel</p>
+                </div>
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--gradient-primary);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="managerEmpCount">48</h3>
+                            <p>Total Employees</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>87%</h3>
+                            <p>Productivity</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="managerProductCount">156</h3>
+                            <p>Products Listed</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>12</h3>
+                            <p>Pending Notifications</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-nav">
+                    <div class="nav-item active" onclick="showManagerSection('messages')">
+                        <i class="fas fa-comment-alt"></i>
+                        Send Messages
+                    </div>
+                    <div class="nav-item" onclick="showManagerSection('products')">
+                        <i class="fas fa-boxes"></i>
+                        Manage Products
+                    </div>
+                    <div class="nav-item" onclick="showManagerSection('analytics')">
+                        <i class="fas fa-chart-pie"></i>
+                        Analytics
+                    </div>
+                    <div class="nav-item" onclick="showManagerSection('employees')">
+                        <i class="fas fa-user-cog"></i>
+                        Employee Management
+                    </div>
+                </div>
+                
+                <div id="managerMessagesSection" class="section active">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div>
+                            <h3 style="margin-bottom: 25px; color: var(--dark);">Compose Message</h3>
+                            <div class="form-group">
+                                <label>Subject</label>
+                                <input type="text" id="messageSubject" class="form-control" placeholder="Enter message subject">
+                            </div>
+                            <div class="form-group">
+                                <label>Recipients</label>
+                                <select id="messageRecipients" class="form-control" multiple style="height: 120px;">
+                                    <option value="all" selected>All Employees</option>
+                                    <option value="sales">Sales Department</option>
+                                    <option value="marketing">Marketing Department</option>
+                                    <option value="it">IT Department</option>
+                                    <option value="hr">HR Department</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Message</label>
+                                <textarea id="managerMessage" class="form-control" rows="6" placeholder="Type your message here..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Priority</label>
+                                <select id="messagePriority" class="form-control">
+                                    <option value="normal">Normal</option>
+                                    <option value="high">High Priority</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="sendMessage()" id="sendMessageBtn">
+                                <i class="fas fa-paper-plane"></i>
+                                Send Message
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <h3 style="margin-bottom: 25px; color: var(--dark);">Recent Messages</h3>
+                            <div id="managerPreviousMessages"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="managerProductsSection" class="section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                        <h3 style="color: var(--dark);">Product Management</h3>
+                        <button class="btn btn-primary" onclick="showAddProductModal()">
+                            <i class="fas fa-plus"></i>
+                            Add New Product
+                        </button>
+                    </div>
+                    <div id="managerProductsContainer"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Customer Portal -->
+        <div id="customerPortal" class="dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <div>
+                    <h2 style="font-size: 24px; margin-bottom: 5px;">Customer Portal</h2>
+                    <p style="opacity: 0.9;">Browse our product catalog</p>
+                </div>
+                <button class="btn btn-secondary" onclick="showPortalSelection()">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Portals
+                </button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <div>
+                        <h3 style="color: var(--dark); margin-bottom: 5px;">Product Catalog</h3>
+                        <p style="color: var(--gray);">Browse our latest products and services</p>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <select class="form-control" style="width: auto;" onchange="filterProducts(this.value)">
+                            <option value="all">All Categories</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="software">Software</option>
+                            <option value="hardware">Hardware</option>
+                            <option value="services">Services</option>
+                        </select>
+                        <div class="input-with-icon" style="width: 300px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="form-control" placeholder="Search products..." onkeyup="searchProducts(this.value)">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="customerProductsContainer" class="products-grid"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Product</h3>
+                <div class="modal-close" onclick="closeAddProductModal()">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="newProductName" class="form-control" placeholder="Enter product name">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="newProductCategory" class="form-control">
+                        <option value="electronics">Electronics</option>
+                        <option value="software">Software</option>
+                        <option value="hardware">Hardware</option>
+                        <option value="services">Services</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="newProductDescription" class="form-control" rows="3" placeholder="Enter product description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Price ($)</label>
+                    <input type="number" id="newProductPrice" class="form-control" placeholder="0.00" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Stock Quantity</label>
+                    <input type="number" id="newProductStock" class="form-control" placeholder="Enter stock quantity">
+                </div>
+                <div class="form-group">
+                    <label>Product Image URL</label>
+                    <input type="text" id="newProductImage" class="form-control" placeholder="https://example.com/image.jpg">
+                </div>
+                <button class="btn btn-primary" onclick="addNewProduct()" style="width: 100%;">
+                    <i class="fas fa-check"></i>
+                    Add Product
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        // Enhanced data storage with more realistic data
+        const users = {
+            employee: [
+                { id: 1, username: "john.doe", password: "emp123", name: "John Doe", role: "Software Developer", department: "IT", avatar: "JD" },
+                { id: 2, username: "jane.smith", password: "emp456", name: "Jane Smith", role: "Sales Executive", department: "Sales", avatar: "JS" },
+                { id: 3, username: "mike.johnson", password: "emp789", name: "Mike Johnson", role: "HR Manager", department: "HR", avatar: "MJ" }
+            ],
+            manager: [
+                { id: 1, username: "admin", password: "admin123", name: "Alex Manager", role: "Operations Manager", department: "Management", avatar: "AM" }
+            ]
+        };
+        
+        // Enhanced messages with more properties
+        let messages = JSON.parse(localStorage.getItem('companyMessages')) || [
+            { 
+                id: 1, 
+                sender: "Alex Manager", 
+                subject: "Quarterly Meeting Announcement", 
+                content: "Please be reminded of our quarterly meeting scheduled for Friday at 2 PM in the main conference room. Attendance is mandatory for all department heads.", 
+                date: "2023-10-15", 
+                priority: "high",
+                recipients: "all",
+                readBy: ["john.doe", "jane.smith"],
+                read: false
+            },
+            { 
+                id: 2, 
+                sender: "Alex Manager", 
+                subject: "New Project Kickoff", 
+                content: "The 'Nexus 2.0' project will kick off next Monday. All team leads should prepare their resource allocation plans by end of day Thursday.", 
+                date: "2023-10-16", 
+                priority: "normal",
+                recipients: "it",
+                readBy: ["john.doe"],
+                read: false
+            },
+            { 
+                id: 3, 
+                sender: "Alex Manager", 
+                subject: "Holiday Schedule Update", 
+                content: "Please note the updated holiday schedule for the upcoming quarter. The schedule has been posted on the company portal.", 
+                date: "2023-10-18", 
+                priority: "normal",
+                recipients: "all",
+                readBy: [],
+                read: false
+            }
+        ];
+        
+        // Enhanced products with more properties
+        let products = JSON.parse(localStorage.getItem('companyProducts')) || [
+            { 
+                id: 1, 
+                name: "Nexus Pro Laptop", 
+                description: "High-performance business laptop with 16GB RAM, 1TB SSD, and 15.6\" 4K display", 
+                price: 1299.99, 
+                category: "electronics",
+                stock: 45,
+                image: "laptop"
+            },
+            { 
+                id: 2, 
+                name: "Office Suite Pro", 
+                description: "Complete office productivity software with cloud integration and collaboration tools", 
+                price: 299.99, 
+                category: "software",
+                stock: 120,
+                image: "software"
+            },
+            { 
+                id: 3, 
+                name: "Ergo Wireless Mouse", 
+                description: "Ergonomic wireless mouse with long battery life and precision tracking", 
+                price: 49.99, 
+                category: "electronics",
+                stock: 12,
+                image: "mouse"
+            },
+            { 
+                id: 4, 
+                name: "Cloud Storage 1TB", 
+                description: "Secure cloud storage solution with 1TB capacity and enterprise-grade encryption", 
+                price: 199.99, 
+                category: "services",
+                stock: 999,
+                image: "cloud"
+            },
+            { 
+                id: 5, 
+                name: "Network Router Pro", 
+                description: "High-speed wireless router with advanced security features and mesh networking", 
+                price: 189.99, 
+                category: "hardware",
+                stock: 23,
+                image: "router"
+            }
+        ];
+        
+        let currentUser = null;
+        let currentPortal = null;
+        let currentEmployee = null;
+        let toastCounter = 0;
+        
+        // Initialize the app
+        function initApp() {
+            // Load data from localStorage or initialize
+            if (!localStorage.getItem('companyMessages')) {
+                localStorage.setItem('companyMessages', JSON.stringify(messages));
+            }
+            
+            if (!localStorage.getItem('companyProducts')) {
+                localStorage.setItem('companyProducts', JSON.stringify(products));
+            }
+            
+            if (!localStorage.getItem('companyUsers')) {
+                localStorage.setItem('companyUsers', JSON.stringify(users));
+            }
+            
+            // Update counts on portal cards
+            updatePortalStats();
+            
+            // Check if user is remembered
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser) {
+                const userData = JSON.parse(rememberedUser);
+                autoLogin(userData);
+            }
+            
+            // Animate elements
+            animateElements();
+            
+            // Simulate real-time updates
+            setInterval(updateLiveData, 5000);
+        }
+        
+        // Update live data simulation
+        function updateLiveData() {
+            // Randomly update some stats
+            const unreadCount = messages.filter(m => !m.readBy.includes(currentUser?.username)).length;
+            if (currentPortal === 'employee' && currentUser) {
+                document.getElementById('empUnreadCount').textContent = unreadCount;
+                document.getElementById('messageBadge').textContent = unreadCount;
+            }
+            
+            // Random employee count fluctuation
+            const empCount = document.getElementById('employeeCount');
+            if (empCount) {
+                const current = parseInt(empCount.textContent);
+                const change = Math.random() > 0.7 ? (Math.random() > 0.5 ? 1 : -1) : 0;
+                const newCount = Math.max(45, Math.min(52, current + change));
+                empCount.textContent = newCount;
+                document.getElementById('totalEmployees').textContent = newCount;
+                document.getElementById('managerEmpCount').textContent = newCount;
+            }
+        }
+        
+        // Animate elements on page load
+        function animateElements() {
+            const cards = document.querySelectorAll('.portal-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        }
+        
+        // Update portal statistics
+        function updatePortalStats() {
+            // Update message counts
+            const unreadMessages = messages.filter(m => !m.read).length;
+            document.getElementById('unreadMessages').textContent = unreadMessages;
+            
+            // Update product count
+            document.getElementById('productCount').textContent = products.length;
+            document.getElementById('managerProductCount').textContent = products.length;
+            
+            // Update employee count
+            document.getElementById('employeeCount').textContent = users.employee.length;
+            document.getElementById('totalEmployees').textContent = users.employee.length;
+            document.getElementById('managerEmpCount').textContent = users.employee.length;
+        }
+        
+        // Show main portal selection screen
+        function showPortalSelection() {
+            document.getElementById('portalSelection').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('employeeDashboard').style.display = 'none';
+            document.getElementById('managerDashboard').style.display = 'none';
+            document.getElementById('customerPortal').style.display = 'none';
+            document.getElementById('appHeader').style.display = 'none';
+            
+            updatePortalStats();
+        }
+        
+        // Show login form for a specific portal
+        function showLogin(portalType) {
+            currentPortal = portalType;
+            document.getElementById('portalSelection').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('appHeader').style.display = 'none';
+            
+            const title = document.getElementById('loginTitle');
+            const subtitle = document.getElementById('loginSubtitle');
+            
+            if (portalType === 'employee') {
+                title.textContent = 'Employee Portal Login';
+                subtitle.textContent = 'Enter your employee credentials to access your dashboard';
+            } else if (portalType === 'manager') {
+                title.textContent = 'Manager Portal Login';
+                subtitle.textContent = 'Enter your management credentials to access the control panel';
+            }
+            
+            // Clear form
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginMessage').textContent = '';
+        }
+        
+        // Show customer portal
+        function showCustomerPortal() {
+            document.getElementById('portalSelection').style.display = 'none';
+            document.getElementById('customerPortal').style.display = 'block';
+            document.getElementById('appHeader').style.display = 'block';
+            
+            // Update user info for customer
+            document.getElementById('userName').textContent = 'Guest Customer';
+            document.getElementById('userRole').textContent = 'Customer';
+            document.getElementById('userAvatar').textContent = 'GC';
+            
+            displayProductsForCustomer();
+        }
+        
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.password-toggle i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+        
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const loginBtn = document.getElementById('loginButton');
+            const originalText = loginBtn.innerHTML;
+            
+            if (!username || !password) {
+                showToast('Please enter both username and password', 'error');
+                return;
+            }
+            
+            // Show loading state
+            loginBtn.innerHTML = '<div class="loader"></div>';
+            loginBtn.disabled = true;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                let validLogin = false;
+                let userData = null;
+                
+                // Check employee credentials
+                if (currentPortal === 'employee') {
+                    userData = users.employee.find(u => u.username === username && u.password === password);
+                    if (userData) {
+                        validLogin = true;
+                        currentUser = userData;
+                        currentEmployee = userData;
+                    }
+                } 
+                // Check manager credentials
+                else if (currentPortal === 'manager') {
+                    userData = users.manager.find(u => u.username === username && u.password === password);
+                    if (userData) {
+                        validLogin = true;
+                        currentUser = userData;
+                    }
+                }
+                
+                if (validLogin) {
+                    // Remember user if checkbox is checked
+                    if (rememberMe) {
+                        localStorage.setItem('rememberedUser', JSON.stringify({
+                            username: userData.username,
+                            portal: currentPortal
+                        }));
+                    }
+                    
+                    // Show success toast
+                    showToast(`Welcome back, ${userData.name}!`, 'success');
+                    
+                    // Clear form
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    
+                    // Show appropriate dashboard
+                    if (currentPortal === 'employee') {
+                        showEmployeeDashboard();
+                    } else if (currentPortal === 'manager') {
+                        showManagerDashboard();
+                    }
+                } else {
+                    showToast('Invalid username or password', 'error');
+                    loginBtn.innerHTML = originalText;
+                    loginBtn.disabled = false;
+                }
+            }, 1500);
+        }
+        
+        // Auto login for remembered users
+        function autoLogin(userData) {
+            currentPortal = userData.portal;
+            
+            if (currentPortal === 'employee') {
+                currentUser = users.employee.find(u => u.username === userData.username);
+                currentEmployee = currentUser;
+                showEmployeeDashboard();
+            } else if (currentPortal === 'manager') {
+                currentUser = users.manager.find(u => u.username === userData.username);
+                showManagerDashboard();
+            }
+        }
+        
+        // Show employee dashboard
+        function showEmployeeDashboard() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('employeeDashboard').style.display = 'block';
+            document.getElementById('appHeader').style.display = 'block';
+            
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role;
+            document.getElementById('userAvatar').textContent = currentUser.avatar;
+            document.getElementById('empName').textContent = currentUser.name.split(' ')[0];
+            
+            // Update message count
+            const unreadCount = messages.filter(m => !m.readBy.includes(currentUser.username)).length;
+            document.getElementById('empUnreadCount').textContent = unreadCount;
+            document.getElementById('messageBadge').textContent = unreadCount;
+            
+            // Display messages
+            displayEmployeeMessages();
+        }
+        
+        // Show manager dashboard
+        function showManagerDashboard() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('managerDashboard').style.display = 'block';
+            document.getElementById('appHeader').style.display = 'block';
+            
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role;
+            document.getElementById('userAvatar').textContent = currentUser.avatar;
+            
+            // Display messages and products
+            displayManagerPreviousMessages();
+            displayManagerProducts();
+        }
+        
+        // Show employee section
+        function showEmployeeSection(section) {
+            // Hide all sections
+            document.querySelectorAll('#employeeDashboard .section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Update nav items
+            document.querySelectorAll('#employeeDashboard .nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`employee${section.charAt(0).toUpperCase() + section.slice(1)}Section`).classList.add('active');
+            
+            // Update active nav item
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Show manager section
+        function showManagerSection(section) {
+            // Hide all sections
+            document.querySelectorAll('#managerDashboard .section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Update nav items
+            document.querySelectorAll('#managerDashboard .nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`manager${section.charAt(0).toUpperCase() + section.slice(1)}Section`).classList.add('active');
+            
+            // Update active nav item
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Display messages for employee
+        function displayEmployeeMessages() {
+            const container = document.getElementById('employeeMessagesContainer');
+            container.innerHTML = '';
+            
+            if (messages.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--gray);">
+                        <i class="fas fa-envelope-open" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 10px;">No messages yet</h3>
+                        <p>You don't have any messages from management.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort messages by date (newest first)
+            const sortedMessages = [...messages].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sortedMessages.forEach(message => {
+                const isRead = message.readBy.includes(currentUser.username);
+                const isUrgent = message.priority === 'urgent';
+                const isHigh = message.priority === 'high';
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-card ${!isRead ? 'unread' : ''}`;
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <div class="message-sender">
+                            <div class="sender-avatar">${message.sender.charAt(0)}</div>
+                            <div class="message-info">
+                                <h4>${message.sender}</h4>
+                                <p>${message.date} • ${message.priority.charAt(0).toUpperCase() + message.priority.slice(1)} Priority</p>
+                            </div>
+                        </div>
+                        ${isUrgent ? '<span class="message-tag" style="background: var(--danger);"><i class="fas fa-exclamation-circle"></i> Urgent</span>' : 
+                          isHigh ? '<span class="message-tag" style="background: var(--accent);"><i class="fas fa-exclamation-triangle"></i> High</span>' : 
+                          '<span class="message-tag" style="background: var(--secondary);"><i class="fas fa-info-circle"></i> Normal</span>'}
+                    </div>
+                    <h4 style="margin-bottom: 10px; color: var(--dark);">${message.subject}</h4>
+                    <div class="message-body">${message.content}</div>
+                    <div class="message-actions">
+                        ${!isRead ? `
+                            <button class="btn-action mark-read" onclick="markAsRead(${message.id})">
+                                <i class="fas fa-check-circle"></i>
+                                Mark as Read
+                            </button>
+                        ` : ''}
+                        <div style="flex-grow: 1;"></div>
+                        <button class="btn-action delete" onclick="deleteMessage(${message.id})">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+                `;
+                container.appendChild(messageDiv);
+            });
+        }
+        
+        // Mark message as read
+        function markAsRead(messageId) {
+            const message = messages.find(m => m.id === messageId);
+            if (message && !message.readBy.includes(currentUser.username)) {
+                message.readBy.push(currentUser.username);
+                localStorage.setItem('companyMessages', JSON.stringify(messages));
+                
+                // Update UI
+                displayEmployeeMessages();
+                
+                // Update count
+                const unreadCount = messages.filter(m => !m.readBy.includes(currentUser.username)).length;
+                document.getElementById('empUnreadCount').textContent = unreadCount;
+                document.getElementById('messageBadge').textContent = unreadCount;
+                
+                showToast('Message marked as read', 'success');
+            }
+        }
+        
+        // Delete message
+        function deleteMessage(messageId) {
+            if (confirm('Are you sure you want to delete this message?')) {
+                messages = messages.filter(m => m.id !== messageId);
+                localStorage.setItem('companyMessages', JSON.stringify(messages));
+                
+                displayEmployeeMessages();
+                showToast('Message deleted', 'success');
+            }
+        }
+        
+        // Manager: Send message to employees
+        function sendMessage() {
+            const subject = document.getElementById('messageSubject').value.trim();
+            const content = document.getElementById('managerMessage').value.trim();
+            const priority = document.getElementById('messagePriority').value;
+            const recipients = Array.from(document.getElementById('messageRecipients').selectedOptions).map(opt => opt.value);
+            const sendBtn = document.getElementById('sendMessageBtn');
+            const originalText = sendBtn.innerHTML;
+            
+            if (!subject || !content) {
+                showToast('Please enter both subject and message content', 'error');
+                return;
+            }
+            
+            // Show loading state
+            sendBtn.innerHTML = '<div class="loader"></div>';
+            sendBtn.disabled = true;
+            
+            // Simulate sending delay
+            setTimeout(() => {
+                // Create new message
+                const newMessage = {
+                    id: messages.length + 1,
+                    sender: currentUser.name,
+                    subject: subject,
+                    content: content,
+                    date: new Date().toISOString().split('T')[0],
+                    priority: priority,
+                    recipients: recipients.join(', '),
+                    readBy: [],
+                    read: false
+                };
+                
+                // Add to messages array
+                messages.push(newMessage);
+                
+                // Save to localStorage
+                localStorage.setItem('companyMessages', JSON.stringify(messages));
+                
+                // Clear form
+                document.getElementById('messageSubject').value = '';
+                document.getElementById('managerMessage').value = '';
+                document.getElementById('messagePriority').value = 'normal';
+                
+                // Update UI
+                displayManagerPreviousMessages();
+                
+                // Reset button
+                sendBtn.innerHTML = originalText;
+                sendBtn.disabled = false;
+                
+                // Show success message
+                showToast('Message sent successfully to all employees!', 'success');
+                
+                // If employees are logged in, show notification
+                if (currentPortal === 'manager') {
+                    showToast('Employees will receive this message in their portal', 'success');
+                }
+            }, 1000);
+        }
+        
+        // Display manager's previous messages
+        function displayManagerPreviousMessages() {
+            const container = document.getElementById('managerPreviousMessages');
+            container.innerHTML = '';
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 30px;">No messages sent yet.</p>';
+                return;
+            }
+            
+            // Sort messages by date (newest first)
+            const sortedMessages = [...messages].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+            
+            sortedMessages.forEach(message => {
+                const readCount = message.readBy.length;
+                const totalEmployees = users.employee.length;
+                const readPercentage = totalEmployees > 0 ? Math.round((readCount / totalEmployees) * 100) : 0;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-card';
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <div class="message-sender">
+                            <div class="sender-avatar" style="background: var(--gradient-secondary);">${message.sender.charAt(0)}</div>
+                            <div class="message-info">
+                                <h4>${message.subject}</h4>
+                                <p>Sent on ${message.date} • To: ${message.recipients}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="message-body" style="font-size: 14px; color: var(--gray);">
+                        ${message.content.substring(0, 100)}${message.content.length > 100 ? '...' : ''}
+                    </div>
+                    <div style="margin-top: 15px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 100px; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: ${readPercentage}%; height: 100%; background: var(--secondary);"></div>
+                                </div>
+                                <span style="font-size: 12px; color: var(--gray);">${readPercentage}% read</span>
+                            </div>
+                        </div>
+                        <span style="font-size: 12px; color: ${message.priority === 'urgent' ? 'var(--danger)' : message.priority === 'high' ? 'var(--accent)' : 'var(--secondary)'}; font-weight: 600;">
+                            ${message.priority.toUpperCase()}
+                        </span>
+                    </div>
+                `;
+                container.appendChild(messageDiv);
+            });
+        }
+        
+        // Display products in manager portal
+        function displayManagerProducts() {
+            const container = document.getElementById('managerProductsContainer');
+            container.innerHTML = '';
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--gray);">
+                        <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 10px;">No products yet</h3>
+                        <p>Add your first product to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Create products grid
+            container.innerHTML = '<div class="products-grid"></div>';
+            const grid = container.querySelector('.products-grid');
+            
+            products.forEach(product => {
+                const stockStatus = product.stock > 20 ? 'in-stock' : product.stock > 0 ? 'low-stock' : 'out-of-stock';
+                const statusText = product.stock > 20 ? 'In Stock' : product.stock > 0 ? 'Low Stock' : 'Out of Stock';
+                const statusColor = product.stock > 20 ? 'var(--secondary)' : product.stock > 0 ? 'var(--accent)' : 'var(--danger)';
+                
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-card';
+                productDiv.innerHTML = `
+                    <div class="product-image">
+                        <i class="fas fa-${product.image || 'box'}"></i>
+                    </div>
+                    <div class="product-content">
+                        <span class="product-category">${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</span>
+                        <h3 class="product-title">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-footer">
+                            <div class="product-price">$${product.price.toFixed(2)}</div>
+                            <div class="product-stock">
+                                <div class="stock-indicator ${stockStatus}"></div>
+                                <span style="color: ${statusColor};">${statusText} (${product.stock})</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display: flex; gap: 10px;">
+                            <button class="btn-action" onclick="editProduct(${product.id})" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="btn-action delete" onclick="deleteProduct(${product.id})">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(productDiv);
+            });
+        }
+        
+        // Display products for customers
+        function displayProductsForCustomer() {
+            const container = document.getElementById('customerProductsContainer');
+            container.innerHTML = '';
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--gray);">
+                        <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 10px;">No products available</h3>
+                        <p>Check back soon for our latest products.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            products.forEach(product => {
+                const stockStatus = product.stock > 20 ? 'in-stock' : product.stock > 0 ? 'low-stock' : 'out-of-stock';
+                const statusText = product.stock > 20 ? 'In Stock' : product.stock > 0 ? 'Low Stock' : 'Out of Stock';
+                const statusColor = product.stock > 20 ? 'var(--secondary)' : product.stock > 0 ? 'var(--accent)' : 'var(--danger)';
+                
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-card';
+                productDiv.innerHTML = `
+                    <div class="product-image">
+                        <i class="fas fa-${product.image || 'box'}"></i>
+                    </div>
+                    <div class="product-content">
+                        <span class="product-category">${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</span>
+                        <h3 class="product-title">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-footer">
+                            <div class="product-price">$${product.price.toFixed(2)}</div>
+                            <div class="product-stock">
+                                <div class="stock-indicator ${stockStatus}"></div>
+                                <span style="color: ${statusColor};">${statusText}</span>
+                            </div>
+                        </div>
+                        <button class="btn-action" style="width: 100%; margin-top: 15px; background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                            <i class="fas fa-cart-plus"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+                container.appendChild(productDiv);
+            });
+        }
+        
+        // Filter products by category
+        function filterProducts(category) {
+            // In a real app, this would filter the product list
+            showToast(`Filtering by ${category} category`, 'success');
+        }
+        
+        // Search products
+        function searchProducts(query) {
+            // In a real app, this would search the product list
+            if (query.length > 2) {
+                showToast(`Searching for "${query}"`, 'success');
+            }
+        }
+        
+        // Show add product modal
+        function showAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'flex';
+        }
+        
+        // Close add product modal
+        function closeAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'none';
+            // Clear form
+            document.getElementById('newProductName').value = '';
+            document.getElementById('newProductCategory').value = 'electronics';
+            document.getElementById('newProductDescription').value = '';
+            document.getElementById('newProductPrice').value = '';
+            document.getElementById('newProductStock').value = '';
+            document.getElementById('newProductImage').value = '';
+        }
+        
+        // Add new product
+        function addNewProduct() {
+            const name = document.getElementById('newProductName').value.trim();
+            const category = document.getElementById('newProductCategory').value;
+            const description = document.getElementById('newProductDescription').value.trim();
+            const price = parseFloat(document.getElementById('newProductPrice').value);
+            const stock = parseInt(document.getElementById('newProductStock').value);
+            const image = document.getElementById('newProductImage').value.trim() || 'box';
+            
+            if (!name || !description || !price || !stock) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Create new product
+            const newProduct = {
+                id: products.length + 1,
+                name: name,
+                category: category,
+                description: description,
+                price: price,
+                stock: stock,
+                image: image
+            };
+            
+            // Add to products array
+            products.push(newProduct);
+            
+            // Save to localStorage
+            localStorage.setItem('companyProducts', JSON.stringify(products));
+            
+            // Close modal
+            closeAddProductModal();
+            
+            // Update UI
+            displayManagerProducts();
+            displayProductsForCustomer();
+            updatePortalStats();
+            
+            // Show success message
+            showToast('Product added successfully!', 'success');
+        }
+        
+        // Edit product
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                // Pre-fill modal with product data
+                document.getElementById('newProductName').value = product.name;
+                document.getElementById('newProductCategory').value = product.category;
+                document.getElementById('newProductDescription').value = product.description;
+                document.getElementById('newProductPrice').value = product.price;
+                document.getElementById('newProductStock').value = product.stock;
+                document.getElementById('newProductImage').value = product.image;
+                
+                // Change modal title and button
+                document.querySelector('#addProductModal .modal-header h3').textContent = 'Edit Product';
+                document.querySelector('#addProductModal .btn-primary').innerHTML = '<i class="fas fa-check"></i> Update Product';
+                
+                // Temporarily change the button onclick
+                const updateBtn = document.querySelector('#addProductModal .btn-primary');
+                const originalOnclick = updateBtn.getAttribute('onclick');
+                updateBtn.setAttribute('onclick', `updateProduct(${productId})`);
+                
+                // Show modal
+                showAddProductModal();
+                
+                // Restore original onclick after modal is closed
+                document.querySelector('#addProductModal .modal-close').onclick = function() {
+                    closeAddProductModal();
+                    updateBtn.setAttribute('onclick', originalOnclick);
+                    document.querySelector('#addProductModal .modal-header h3').textContent = 'Add New Product';
+                    document.querySelector('#addProductModal .btn-primary').innerHTML = '<i class="fas fa-check"></i> Add Product';
+                };
+            }
+        }
+        
+        // Update product
+        function updateProduct(productId) {
+            const name = document.getElementById('newProductName').value.trim();
+            const category = document.getElementById('newProductCategory').value;
+            const description = document.getElementById('newProductDescription').value.trim();
+            const price = parseFloat(document.getElementById('newProductPrice').value);
+            const stock = parseInt(document.getElementById('newProductStock').value);
+            const image = document.getElementById('newProductImage').value.trim() || 'box';
+            
+            if (!name || !description || !price || !stock) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Find and update product
+            const productIndex = products.findIndex(p => p.id === productId);
+            if (productIndex !== -1) {
+                products[productIndex] = {
+                    ...products[productIndex],
+                    name: name,
+                    category: category,
+                    description: description,
+                    price: price,
+                    stock: stock,
+                    image: image
+                };
+                
+                // Save to localStorage
+                localStorage.setItem('companyProducts', JSON.stringify(products));
+                
+                // Close modal
+                closeAddProductModal();
+                
+                // Update UI
+                displayManagerProducts();
+                displayProductsForCustomer();
+                
+                // Show success message
+                showToast('Product updated successfully!', 'success');
+                
+                // Restore modal to add mode
+                document.querySelector('#addProductModal .modal-header h3').textContent = 'Add New Product';
+                document.querySelector('#addProductModal .btn-primary').innerHTML = '<i class="fas fa-check"></i> Add Product';
+                document.querySelector('#addProductModal .btn-primary').setAttribute('onclick', 'addNewProduct()');
+            }
+        }
+        
+        // Delete product
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                products = products.filter(p => p.id !== productId);
+                localStorage.setItem('companyProducts', JSON.stringify(products));
+                
+                displayManagerProducts();
+                displayProductsForCustomer();
+                updatePortalStats();
+                
+                showToast('Product deleted successfully', 'success');
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            currentUser = null;
+            currentPortal = null;
+            currentEmployee = null;
+            
+            // Clear remembered user if exists
+            localStorage.removeItem('rememberedUser');
+            
+            showPortalSelection();
+            showToast('You have been logged out successfully', 'success');
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toastId = `toast-${++toastCounter}`;
+            
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-circle',
+                warning: 'exclamation-triangle'
+            };
+            
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas fa-${icons[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <h4>${type.charAt(0).toUpperCase() + type.slice(1)}</h4>
+                    <p>${message}</p>
+                </div>
+                <div style="cursor: pointer;" onclick="document.getElementById('${toastId}').remove()">
+                    <i class="fas fa-times"></i>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (document.getElementById(toastId)) {
+                    document.getElementById(toastId).remove();
+                }
+            }, 5000);
+        }
+        
+        // Initialize the app when page loads
+        window.onload = initApp;
+        
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to all buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Add ripple effect to buttons
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const x = e.clientX - e.target.getBoundingClientRect().left;
+                    const y = e.clientY - e.target.getBoundingClientRect().top;
+                    
+                    const ripple = document.createElement('span');
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+Shift+L to logout
+                if (e.ctrlKey && e.shiftKey && e.key === 'L') {
+                    if (currentUser) {
+                        logout();
+                    }
+                }
+                
+                // Escape to go back
+                if (e.key === 'Escape') {
+                    if (document.getElementById('addProductModal').style.display === 'flex') {
+                        closeAddProductModal();
+                    } else if (currentUser) {
+                        // Do nothing
+                    } else {
+                        showPortalSelection();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
